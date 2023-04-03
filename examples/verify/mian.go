@@ -19,7 +19,7 @@ func main() {
 	startTime := time.Now().Unix()
 	for i := 0; i < 1000; i++ {
 		go func() {
-			for i := 0; i < 1000; i++ {
+			for k := 0; k < 1000; k++ {
 				TestRequest()
 			}
 		}()
@@ -32,14 +32,13 @@ func main() {
 
 func TestRequest() {
 	response, _ := http.Get("http://localhost:8080/user/list")
-	all, _ := io.ReadAll(response.Body)
-	// 加锁
-	lock.Lock()
-	// 数量加一
-	count++
-	// 解锁
-	lock.Unlock()
-	go func() {
-		fmt.Println(string(all))
-	}()
+	_, _ = io.ReadAll(response.Body)
+	if response.StatusCode == 200 {
+		// 加锁
+		lock.Lock()
+		// 数量加一
+		count++
+		// 解锁
+		lock.Unlock()
+	}
 }
